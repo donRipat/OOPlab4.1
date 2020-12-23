@@ -56,7 +56,7 @@ namespace OOPlab4._1
                 tail = fresh;
                 head = fresh;
             }
-            current = fresh;
+            current = tail;
             ++count;
             return true;
         }
@@ -78,7 +78,7 @@ namespace OOPlab4._1
                 tail = fresh;
                 head = fresh;
             }
-            current = fresh;
+            current = head;
             ++count;
             return true;
         }
@@ -130,7 +130,7 @@ namespace OOPlab4._1
         //  Move current to the next shape
         public bool Step_forward()
         {
-            if (current.next == null)
+            if (count == 0 || current.next == null)
                 return false;
             current = current.next;
             return true;
@@ -139,22 +139,22 @@ namespace OOPlab4._1
         //  Move current to the previous shape
         public bool Step_back()
         {
-            if (current.prev == null)
+            if (count == 0 || current.prev == null)
                 return false;
             current = current.prev;
             return true;
         }
 
         //  Draw all shapes in list
-        public bool Draw_whole_list()
-        {
-            if (count == 0)
-                return false;
-            bool cond = true;
-            for (current = head; cond; cond = Step_forward())
-                current.Shape.Draw();
-            return true;
-        }
+        //public bool Draw_whole_list()
+        //{
+        //    if (count == 0)
+        //        return false;
+        //    bool cond = true;
+        //    for (current = head; cond; cond = Step_forward())
+        //        current.Shape.Draw();
+        //    return true;
+        //}
 
         //  Set current to the head
         public bool Set_current_first()
@@ -172,6 +172,23 @@ namespace OOPlab4._1
                 return false;
             current = tail;
             return true;
+        }
+
+        public bool Delete_one(AShape shape)
+        {
+            if (shape == null)
+                return false;
+            Set_current_first();
+            for (bool cond = true; cond; cond = Step_forward())
+            {
+                if (Current.Shape == shape)
+                {
+                    current.prev.next = current.next;
+                    current.next.prev = current.prev;
+                    return true;
+                }
+            }
+            return false;
         }
 
         //  no need to describe
