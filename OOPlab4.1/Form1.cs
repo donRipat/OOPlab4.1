@@ -22,35 +22,63 @@ namespace OOPlab4._1
         DoublyLinkedList highlighted = new DoublyLinkedList();
         static Graphics graphics;
         CCircle current = new CCircle();
+        CCircle newcurrent = new CCircle();
 
         private void frmMain_MouseDown(object sender, MouseEventArgs e)
         {
             Point p = new Point(e.X, e.Y);
-            CCircle c = new CCircle(p, r);
             if (!In_any_circle(p))
             {
+                //  mouse down on form
+                CCircle c = new CCircle(p, r);
                 if (e.Button == MouseButtons.Left)
                 {
+                    //  adding new circle
+                    if (newcurrent != null)
+                        newcurrent.Draw(graphics, 0);
                     current = c;
+                    newcurrent = c;
                     circles.Push_back(c);
                     lBcircles.Items.Add(string.Format("{0}, {1}", p.X, p.Y));
-                    c.Draw(graphics, 2);
+                    newcurrent.Draw(graphics, 2);
                 }
                 else if (e.Button == MouseButtons.Right)
                 {
+                    //  deleting all circles
                     graphics.Clear(Color.WhiteSmoke);
-                    circles = new DoublyLinkedList();
                     lBcircles.Items.Clear();
+                    if (highlighted.Count == 0)
+                        circles = new DoublyLinkedList();
+                    else 
+                    {
+                        while (highlighted.Count > 0)
+                        {
+                            for (circles.Set_current_first();
+                                highlighted.Head != circles.Current;
+                                circles.Step_forward())
+                                ;   //  EMPTY CYCLE
+                            circles.Delete_current();
+                            highlighted.Delete_first();
+                        }
+                    }
+                    current = null;
+                    newcurrent = null;
                 }
             }
             else
             {
+                //  mouse down on circle
                 if (e.Button == MouseButtons.Left)
                 {
+                    current.Draw(graphics, 0);
+                    newcurrent.Draw(graphics, 2);
+                    current = newcurrent;
                     //  should set current to exicting circle and make it red
                 }
                 else if (e.Button == MouseButtons.Right)
                 {
+                    current = null;
+                    Draw_group(1);
                     //  1) should switch status "highlighted"
                     //  2) should give a color to circle matching to status "highlighted"
                 }
@@ -59,6 +87,7 @@ namespace OOPlab4._1
 
         private bool In_any_circle(Point p)
         {
+            bool ans = false;
             if (circles.Count > 0)
             {
                 circles.Set_current_first();
@@ -66,10 +95,23 @@ namespace OOPlab4._1
                 {
                     CCircle i = (CCircle)circles.Current.Shape.Clone();
                     if (i.Contains(p))
-                        return true;
+                    {
+                        newcurrent = i;
+                        highlighted.Push_back(i);
+                        ans = true;
+                    }
                 }
             }
-            return false;
+            return ans;
+        }
+
+        private void Draw_group(int status)
+        {
+            highlighted.Set_current_first();
+            for (bool cond = true; cond; cond = highlighted.Step_forward())
+            {
+                highlighted.Current.Shape.Draw(graphics, status);
+            }
         }
 
         private void frmMain_Load(object sender, EventArgs e)

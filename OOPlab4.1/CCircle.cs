@@ -52,7 +52,7 @@ namespace OOPlab4._1
             if (statement == 2)
                 pen = new Pen(Color.Red, w);
             else if (statement == 1)
-                pen = new Pen(Color.Blue, w);
+                pen = new Pen(Color.DarkCyan, w);
             else
                 pen = new Pen(Color.Purple, w);
             g.DrawEllipse(pen, x, y, r, r);

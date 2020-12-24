@@ -105,6 +105,32 @@ namespace OOPlab4._1
             return true;
         }
 
+        public bool Delete_current()
+        {
+            if (current != null)
+            {
+                if (current.prev != null)
+                {
+                    DoublyNode t = new DoublyNode(current.prev.Shape);
+                    t = current.prev;
+                }
+                else if (current.next != null)
+                {
+                    DoublyNode t = new DoublyNode(current.next.Shape);
+                    t = current.next;
+                }
+                else
+                {
+                    current = null;
+                }
+
+                current.prev.next = current.next;
+                current.next.prev = current.prev;
+                return true;
+            }
+            return false;
+        }
+
         //  Delete first shape from list
         public bool Delete_first()
         {
@@ -172,23 +198,6 @@ namespace OOPlab4._1
                 return false;
             current = tail;
             return true;
-        }
-
-        public bool Delete_one(AShape shape)
-        {
-            if (shape == null)
-                return false;
-            Set_current_first();
-            for (bool cond = true; cond; cond = Step_forward())
-            {
-                if (Current.Shape == shape)
-                {
-                    current.prev.next = current.next;
-                    current.next.prev = current.prev;
-                    return true;
-                }
-            }
-            return false;
         }
 
         //  no need to describe
