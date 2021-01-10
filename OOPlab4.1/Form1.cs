@@ -41,6 +41,9 @@ namespace OOPlab4._1
                     bool h = false;
                     //  h turns to TRUE if list contained highlighted circles
 
+                    bool c = false;
+                    //  c turns to TRUE if current was deleted
+
                     //  deleting circles
                     if (circles.Count > 0)
                     {
@@ -50,17 +53,36 @@ namespace OOPlab4._1
                             if (circles.Current != null)
                             {
                                 StatusCircle t = (StatusCircle)circles.Current.Shape;
-                                if (t.Status == 1)
+                                if (t.Status == 1 || t.Status == 3)
                                 {
                                     h = true;
-                                    circles.Delete_current();
+                                    if (t.Status == 3)
+                                        c = true;
                                     if (t != circles.Head.Shape)
+                                    {
+                                        circles.Delete_current();
                                         cond = circles.Step_forward();
+                                    }
+                                    else
+                                    {
+                                        circles.Delete_current();
+                                        cond = !circles.Is_empty();
+                                    }
                                 }
-                                else cond = circles.Step_forward();
+                                else
+                                    cond = circles.Step_forward();
                             }
                         }
-                        if (circles.Count > 0 && !h)
+                        if (c)
+                        {
+                            cur = null;
+                            if (circles.Count > 0)
+                            {
+                                circles.Tail.Shape.Switch_current();
+                                cur = (StatusCircle)circles.Tail.Shape;
+                            }
+                        }
+                        else if (circles.Count > 0 && !h)
                         {
                             if (circles.Search(cur))
                                 circles.Delete_current();
