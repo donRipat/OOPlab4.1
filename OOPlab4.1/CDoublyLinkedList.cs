@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace OOPlab4._1
+﻿namespace OOPlab4._1
 {
     class DoublyNode
     {
@@ -37,6 +31,21 @@ namespace OOPlab4._1
             tail = null;
             current = null;
             count = 0;
+        }
+
+        //  Search given shape and set current to it if found
+        public bool Search(AShape s)
+        {
+            if (s != null)
+            {
+                DoublyNode t = current;
+                Set_current_first();
+                for (bool cond = !Is_empty(); cond; cond = Step_forward())
+                    if (Current.Shape == s)
+                        return true;
+                current = t;
+            }
+            return false;
         }
 
         //  Add new shape to the back of the list
@@ -105,27 +114,28 @@ namespace OOPlab4._1
             return true;
         }
 
+        //  Delete current and set current to previous
         public bool Delete_current()
         {
             if (current != null)
             {
-                if (current.prev != null)
+                if (current != head && current != tail)
                 {
-                    DoublyNode t = new DoublyNode(current.prev.Shape);
-                    t = current.prev;
+                    current.prev.next = current.next;
+                    current.next.prev = current.prev;
+                    current = current.prev;
+                    --count;
                 }
-                else if (current.next != null)
+                else if (current == head)
                 {
-                    DoublyNode t = new DoublyNode(current.next.Shape);
-                    t = current.next;
+                    current = null;
+                    Delete_first();
                 }
                 else
                 {
                     current = null;
+                    Delete_last();
                 }
-
-                current.prev.next = current.next;
-                current.next.prev = current.prev;
                 return true;
             }
             return false;
@@ -170,17 +180,6 @@ namespace OOPlab4._1
             current = current.prev;
             return true;
         }
-
-        //  Draw all shapes in list
-        //public bool Draw_whole_list()
-        //{
-        //    if (count == 0)
-        //        return false;
-        //    bool cond = true;
-        //    for (current = head; cond; cond = Step_forward())
-        //        current.Shape.Draw();
-        //    return true;
-        //}
 
         //  Set current to the head
         public bool Set_current_first()

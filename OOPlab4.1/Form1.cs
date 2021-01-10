@@ -1,11 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace OOPlab4._1
@@ -19,50 +13,66 @@ namespace OOPlab4._1
 
         const int r = 75;
         DoublyLinkedList circles = new DoublyLinkedList();
-        DoublyLinkedList highlighted = new DoublyLinkedList();
+        StatusCircle cur;
         static Graphics graphics;
-        CCircle current = new CCircle();
-        CCircle newcurrent = new CCircle();
-
+        
         private void frmMain_MouseDown(object sender, MouseEventArgs e)
         {
             Point p = new Point(e.X, e.Y);
             if (!In_any_circle(p))
             {
                 //  mouse down on form
-                CCircle c = new CCircle(p, r);
                 if (e.Button == MouseButtons.Left)
                 {
+                    //  redraw old circle
+                    if (circles.Search(cur))
+                    {
+                        circles.Current.Shape.Switch_current();
+                        circles.Current.Shape.Draw(graphics);
+                    }
+
                     //  adding new circle
-                    if (newcurrent != null)
-                        newcurrent.Draw(graphics, 0);
-                    current = c;
-                    newcurrent = c;
-                    circles.Push_back(c);
-                    lBcircles.Items.Add(string.Format("{0}, {1}", p.X, p.Y));
-                    newcurrent.Draw(graphics, 2);
+                    cur = new StatusCircle(p, r);
+                    cur.Draw(graphics);
+                    circles.Push_back(cur);
                 }
                 else if (e.Button == MouseButtons.Right)
                 {
-                    //  deleting all circles
-                    graphics.Clear(Color.WhiteSmoke);
-                    lBcircles.Items.Clear();
-                    if (highlighted.Count == 0)
-                        circles = new DoublyLinkedList();
-                    else 
+                    bool h = false;
+                    //  h turns to TRUE if list contained highlighted circles
+
+                    //  deleting circles
+                    if (circles.Count > 0)
                     {
-                        while (highlighted.Count > 0)
+                        circles.Set_current_first();
+                        for (bool cond = !circles.Is_empty(); cond; )
                         {
-                            for (circles.Set_current_first();
-                                highlighted.Head != circles.Current;
-                                circles.Step_forward())
-                                ;   //  EMPTY CYCLE
-                            circles.Delete_current();
-                            highlighted.Delete_first();
+                            if (circles.Current != null)
+                            {
+                                StatusCircle t = (StatusCircle)circles.Current.Shape;
+                                if (t.Status == 1)
+                                {
+                                    h = true;
+                                    circles.Delete_current();
+                                    if (t != circles.Head.Shape)
+                                        cond = circles.Step_forward();
+                                }
+                                else cond = circles.Step_forward();
+                            }
+                        }
+                        if (circles.Count > 0 && !h)
+                        {
+                            if (circles.Search(cur))
+                                circles.Delete_current();
+                            cur = null;
+                            if (circles.Count > 0)
+                            {
+                                circles.Tail.Shape.Switch_current();
+                                cur = (StatusCircle)circles.Tail.Shape;
+                            }
                         }
                     }
-                    current = null;
-                    newcurrent = null;
+                    Draw_frm();
                 }
             }
             else
@@ -70,20 +80,44 @@ namespace OOPlab4._1
                 //  mouse down on circle
                 if (e.Button == MouseButtons.Left)
                 {
-                    current.Draw(graphics, 0);
-                    newcurrent.Draw(graphics, 2);
-                    current = newcurrent;
-                    //  should set current to exicting circle and make it red
+                    StatusCircle c = In_which_circle(p);
+
+                    //  redraw old circle
+                    if (circles.Search(cur))
+                        circles.Current.Shape.Switch_current();
+                    circles.Current.Shape.Draw(graphics);
+
+                    //  redraw new current
+                    if (circles.Search(c))
+                        circles.Current.Shape.Switch_current();
+                    cur = (StatusCircle)circles.Current.Shape;
+                    cur.Draw(graphics);
                 }
                 else if (e.Button == MouseButtons.Right)
                 {
-                    current = null;
-                    Draw_group(1);
-                    //  1) should switch status "highlighted"
-                    //  2) should give a color to circle matching to status "highlighted"
+                    Highlight(p);
+                    Draw_frm();
                 }
             }
+
+            lBcircles.Items.Clear();
+            circles.Set_current_first();
+            for (bool cond = !circles.Is_empty(); cond; cond = circles.Step_forward())
+            {
+                StatusCircle c = (StatusCircle)circles.Current.Shape;
+                lBcircles.Items.Add(string.Format("{0}, {1}",
+                    c.X, c.Y));
+            }
         }
+
+        // ================================================
+        // ================================================
+        
+            /// There's some problems with deleting highlighted objects
+            /// but other things' fine
+        
+        // ================================================
+        // ================================================
 
         private bool In_any_circle(Point p)
         {
@@ -91,27 +125,52 @@ namespace OOPlab4._1
             if (circles.Count > 0)
             {
                 circles.Set_current_first();
-                for (bool cond = true; cond; cond = circles.Step_forward())
+                for (bool cond = !circles.Is_empty(); cond; cond = circles.Step_forward())
                 {
-                    CCircle i = (CCircle)circles.Current.Shape.Clone();
-                    if (i.Contains(p))
-                    {
-                        newcurrent = i;
-                        highlighted.Push_back(i);
+                    if (circles.Current.Shape.Contains(p))
                         ans = true;
-                    }
                 }
             }
             return ans;
         }
 
-        private void Draw_group(int status)
+        private StatusCircle In_which_circle(Point p)
         {
-            highlighted.Set_current_first();
-            for (bool cond = true; cond; cond = highlighted.Step_forward())
+            if (circles.Count > 0)
             {
-                highlighted.Current.Shape.Draw(graphics, status);
+                circles.Set_current_first();
+                for (bool cond = !circles.Is_empty(); cond; cond = circles.Step_forward())
+                {
+                    if (circles.Current.Shape.Contains(p))
+                        return (StatusCircle)circles.Current.Shape;
+                }
             }
+            return null;
+        }
+
+        private void Highlight(Point p)
+        {
+            if (circles.Count > 0)
+            {
+                circles.Set_current_first();
+                for (bool cond = !circles.Is_empty(); cond; cond = circles.Step_forward())
+                {
+                    if (circles.Current.Shape.Contains(p))
+                        circles.Current.Shape.Switch_highlight();
+                }
+            }
+        }
+        
+        private void Draw_frm()
+        {
+            graphics.Clear(Color.WhiteSmoke);
+            circles.Set_current_first();
+            for (bool cond = !circles.Is_empty(); cond; cond = circles.Step_forward())
+            {
+                circles.Current.Shape.Draw(graphics);
+            }
+            if (cur != null)
+                cur.Draw(graphics);
         }
 
         private void frmMain_Load(object sender, EventArgs e)

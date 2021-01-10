@@ -35,9 +35,9 @@
             // 
             this.lBcircles.FormattingEnabled = true;
             this.lBcircles.ItemHeight = 22;
-            this.lBcircles.Location = new System.Drawing.Point(12, 12);
+            this.lBcircles.Location = new System.Drawing.Point(878, 9);
             this.lBcircles.Name = "lBcircles";
-            this.lBcircles.Size = new System.Drawing.Size(241, 532);
+            this.lBcircles.Size = new System.Drawing.Size(92, 532);
             this.lBcircles.TabIndex = 0;
             // 
             // frmMain
