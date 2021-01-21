@@ -28,24 +28,13 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.lBcircles = new System.Windows.Forms.ListBox();
             this.SuspendLayout();
-            // 
-            // lBcircles
-            // 
-            this.lBcircles.FormattingEnabled = true;
-            this.lBcircles.ItemHeight = 22;
-            this.lBcircles.Location = new System.Drawing.Point(878, 9);
-            this.lBcircles.Name = "lBcircles";
-            this.lBcircles.Size = new System.Drawing.Size(92, 532);
-            this.lBcircles.TabIndex = 0;
             // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 22F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(982, 553);
-            this.Controls.Add(this.lBcircles);
             this.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
@@ -60,8 +49,6 @@
         }
 
         #endregion
-
-        private System.Windows.Forms.ListBox lBcircles;
     }
 }
 

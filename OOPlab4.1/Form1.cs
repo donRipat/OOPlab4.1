@@ -121,25 +121,7 @@ namespace OOPlab4._1
                     Draw_frm();
                 }
             }
-
-            lBcircles.Items.Clear();
-            circles.Set_current_first();
-            for (bool cond = !circles.Is_empty(); cond; cond = circles.Step_forward())
-            {
-                StatusCircle c = (StatusCircle)circles.Current.Shape;
-                lBcircles.Items.Add(string.Format("{0}, {1}",
-                    c.X, c.Y));
-            }
         }
-
-        // ================================================
-        // ================================================
-        
-            /// There's some problems with deleting highlighted objects
-            /// but other things' fine
-        
-        // ================================================
-        // ================================================
 
         private bool In_any_circle(Point p)
         {
