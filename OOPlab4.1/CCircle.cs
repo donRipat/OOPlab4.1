@@ -40,12 +40,7 @@ namespace OOPlab4._1
         {
             Debug.WriteLine("O");
         }
-
-        public override AShape Clone()
-        {
-            return new CCircle(center.X, center.Y, r);
-        }
-
+        
         public override bool Contains(Point p)
         {
             if (p != null)
@@ -108,12 +103,7 @@ namespace OOPlab4._1
                 pen = new Pen(Color.SeaGreen, w);
             g.DrawEllipse(pen, x, y, R, R);
         }
-
-        public override AShape Clone()
-        {
-            return new StatusCircle(status, X, Y, R);
-        }
-
+        
         public override void Switch_current()
         {
             if (status > 1)

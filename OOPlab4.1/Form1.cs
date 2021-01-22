@@ -19,7 +19,7 @@ namespace OOPlab4._1
         private void frmMain_MouseDown(object sender, MouseEventArgs e)
         {
             Point p = new Point(e.X, e.Y);
-            if (!In_any_circle(p))
+            if (In_which_circle(p) == null)
             {
                 //  mouse down on form
                 if (e.Button == MouseButtons.Left)
@@ -39,7 +39,8 @@ namespace OOPlab4._1
                 else if (e.Button == MouseButtons.Right)
                 {
                     bool h = false;
-                    //  h turns to TRUE if list contained highlighted circles
+                    //  h turns to TRUE if list contained highlighted 
+                    //  circles
 
                     bool c = false;
                     //  c turns to TRUE if current was deleted
@@ -52,7 +53,8 @@ namespace OOPlab4._1
                         {
                             if (circles.Current != null)
                             {
-                                StatusCircle t = (StatusCircle)circles.Current.Shape;
+                                StatusCircle t = (StatusCircle)
+                                    circles.Current.Shape;
                                 if (t.Status == 1 || t.Status == 3)
                                 {
                                     h = true;
@@ -123,27 +125,13 @@ namespace OOPlab4._1
             }
         }
 
-        private bool In_any_circle(Point p)
-        {
-            bool ans = false;
-            if (circles.Count > 0)
-            {
-                circles.Set_current_first();
-                for (bool cond = !circles.Is_empty(); cond; cond = circles.Step_forward())
-                {
-                    if (circles.Current.Shape.Contains(p))
-                        ans = true;
-                }
-            }
-            return ans;
-        }
-
         private StatusCircle In_which_circle(Point p)
         {
             if (circles.Count > 0)
             {
                 circles.Set_current_first();
-                for (bool cond = !circles.Is_empty(); cond; cond = circles.Step_forward())
+                for (bool cond = !circles.Is_empty(); cond; 
+                    cond = circles.Step_forward())
                 {
                     if (circles.Current.Shape.Contains(p))
                         return (StatusCircle)circles.Current.Shape;
@@ -157,7 +145,8 @@ namespace OOPlab4._1
             if (circles.Count > 0)
             {
                 circles.Set_current_first();
-                for (bool cond = !circles.Is_empty(); cond; cond = circles.Step_forward())
+                for (bool cond = !circles.Is_empty(); cond; 
+                    cond = circles.Step_forward())
                 {
                     if (circles.Current.Shape.Contains(p))
                         circles.Current.Shape.Switch_highlight();
@@ -169,7 +158,8 @@ namespace OOPlab4._1
         {
             graphics.Clear(Color.WhiteSmoke);
             circles.Set_current_first();
-            for (bool cond = !circles.Is_empty(); cond; cond = circles.Step_forward())
+            for (bool cond = !circles.Is_empty(); cond; 
+                cond = circles.Step_forward())
             {
                 circles.Current.Shape.Draw(graphics);
             }
